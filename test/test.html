@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>测试</title>
+	<script type="text/javascript" src="../md2html4brower.js"></script>
+</head>
+<body>
+<textarea id="md">
+# 标题
+## b
+### c
+#### d
+##### e
+###### f
+
+* a
+* b
+
+- c
+- d
+
++ e
++ f
+
+1 1
+2 2
+3 3
+4 4
+
+你好
+我好
+
+*a*的血型是A
+**b**的血型是B
+
+```coffee
+	a = 123
+	a += 44
+```
+
+[百度](http://www.baidu.com)
+[百度锚][a](http://www.baidu.com)
+[锚][a]
+![好图](http://img2.imgtn.bdimg.com/it/u=2733642789,409491587&fm=21&gp=0.jpg)
+</textarea>
+<div id="content"></div>
+<script type="text/javascript">
+	md_str = document.getElementById('md').innerHTML;
+	console.log(md_str);
+	var cc = document.getElementById('content');
+	var marked = new Marked();
+	cc.innerHTML = marked(md_str);
+</script>
+</body>
+</html>

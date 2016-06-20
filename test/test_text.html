@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>测试</title>
+	<script type="text/javascript" src="../md2html4brower.js"></script>
+</head>
+<body>
+	<div id="md"><pre>
+*a*的血型是A
+**b**的血型是B
+	</pre></div>
+	<div id="content"></div>
+	<script type="text/javascript">
+		var cc = document.getElementById('content');
+		var marked = new Marked();
+		cc.innerHTML = marked("*a*的血型是A\r\n**b**的血型是B\r\n");
+	</script>
+</body>
+</html>

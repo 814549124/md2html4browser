@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>测试</title>
+	<script type="text/javascript" src="../md2html4brower.js"></script>
+</head>
+<body>
+	<div id="md"><pre>
+[百度](http://www.baidu.com)
+[百度锚][a](http://www.baidu.com)
+[锚][a]
+![好图](http://img2.imgtn.bdimg.com/it/u=2733642789,409491587&fm=21&gp=0.jpg)
+	</pre></div>
+	<div id="content"></div>
+	<script type="text/javascript">
+		var cc = document.getElementById('content');
+		var marked = new Marked();
+		cc.innerHTML = marked("[百度](http://www.baidu.com)\r\n[百度锚][a](http://www.baidu.com)\r\n[锚][a]\r\n![好图](http://img2.imgtn.bdimg.com/it/u=2733642789,409491587&fm=21&gp=0.jpg)\r\n");
+	</script>
+</body>
+</html>
