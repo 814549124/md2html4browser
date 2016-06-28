@@ -7,196 +7,315 @@ Marked = null;
   var m_instance;
   m_instance = null;
   return Marked = function() {
-    var ol_list_reg, title1_reg, title2_reg, title3_reg, title4_reg, title5_reg, title6_reg, ul_list_reg;
+    var before_format, build, code_reg, em_reg, empty_reg, format, href_reg, img_reg, ol_reg, quote_reg, strong_reg, table_reg, title1_reg, title2_reg, title3_reg, title4_reg, title5_reg, title6_reg, ul_reg;
     if (m_instance) {
       return m_instance;
     }
-    title1_reg = /^#\s+(.*)/g;
-    title2_reg = /^#{2}\s+(.*)/g;
-    title3_reg = /^#{3}\s+(.*)/g;
-    title4_reg = /^#{4}\s+(.*)/g;
-    title5_reg = /^#{5}\s+(.*)/g;
-    title6_reg = /^#{6}\s+(.*)/g;
-    ul_list_reg = /^[\*,+,-]\s+(.*)/g;
-    ol_list_reg = /^\d+\s+(.*)/g;
-    return m_instance = function(content) {
-      var block, block_reg, blocks, code_reg, code_seg, html, i, j, k, l, len, len1, len2, m, o, objs, paragraph_reg, r, re, row1, row_len, row_reg, rows, total_html, v;
-      total_html = '';
-      block_reg = /(?:\r?\n){2,}/mg;
-      row_reg = /\r?\n/g;
-      title1_reg = /^#\s+(.*)/g;
-      title2_reg = /^#{2}\s+(.*)/g;
-      title3_reg = /^#{3}\s+(.*)/g;
-      title4_reg = /^#{4}\s+(.*)/g;
-      title5_reg = /^#{5}\s+(.*)/g;
-      title6_reg = /^#{6}\s+(.*)/g;
-      ul_list_reg = /^[\*,+,-]\s+(.*)/g;
-      ol_list_reg = /^\d+\s+(.*)/g;
-      paragraph_reg = /^\w|^[\u4e00-\u9fa5]/g;
-      code_reg = /```(\w*)\s*\r?\n([\s\S]*?)```/mg;
-      code_seg = [];
-      i = 0;
-      while (null !== (re = code_reg.exec(content))) {
-        code_seg.push("<pre><code class='lang-" + re[1] + "'>\r\n" + re[2] + "\r\n</code></pre>");
-        content = content.replace(re[0], "\x00\x01\x02" + i);
-        i++;
+    title1_reg = /^\s*#{1}(.*)/;
+    title2_reg = /^\s*#{2}(.*)/;
+    title3_reg = /^\s*#{3}(.*)/;
+    title4_reg = /^\s*#{4}(.*)/;
+    title5_reg = /^\s*#{5}(.*)/;
+    title6_reg = /^\s*#{6}(.*)/;
+    ul_reg = /^\s*[*,+,-]\s+(.*)/;
+    ol_reg = /^\s*\d+\s+(.*)/;
+    quote_reg = /^\s*>\s+(.*)/;
+    empty_reg = /^\s*$/;
+    code_reg = /^\s*```(.*)/;
+    table_reg = /^\|/;
+    em_reg = /\*([\w\u4e00-\u9fa5]+)\*/g;
+    strong_reg = /\*\*([\w\u4e00-\u9fa5]+)\*\*/g;
+    img_reg = /!\[(.*?)?\](?:\[(.*?)\])?\((.*?)\)/g;
+    href_reg = /\[(.*?)?\](?:\[(.*?)\])?\((.*?)\)/g;
+    before_format = function(content) {
+      content = content.replace(strong_reg, '<strong>$1</strong>');
+      content = content.replace(em_reg, '<em>$1</em>');
+      content = content.replace(img_reg, '<img src="$3" id="$2" alt="$1">');
+      return content = content.replace(href_reg, '<a href="$3" id="$2">$1</a>');
+    };
+    format = function(rows, objs, env) {
+      var c, i, len, r, re, td, tds, zsobjs, zsr, zsrows, zstr;
+      while (true) {
+        r = rows.shift();
+        if (r === void 0 || r === '') {
+          continue;
+        } else {
+          rows.unshift(r);
+          break;
+        }
       }
-      blocks = content.split(block_reg);
-      for (j = 0, len = blocks.length; j < len; j++) {
-        block = blocks[j];
+      if (!objs) {
         objs = [];
-        html = '';
-        block = block.replace(/\*{2}(.+?)\*{2}/g, '<strong>$1</strong>');
-        block = block.replace(/\*(.+?)\*/g, '<em>$1</em>');
-        block = block.replace(/!\[(.+?)\](\[(.*?)\])?(\((.+?)\))?/g, '<img src="$5" id="$3" alt="$1">');
-        block = block.replace(/\[(.+?)\](\[(.*?)\])?\((.+?)\)/g, '<a href="$4" id="$3">$1</a>');
-        block = block.replace(/\[(.+?)\]\[(.*?)\]/g, '<a href="#$2">$1</a>');
-        row_reg.lastIndex = 0;
-        rows = block.split(row_reg);
-        row_len = rows.length;
-        row1 = rows[0];
-        paragraph_reg.lastIndex = 0;
-        switch (true) {
-          case paragraph_reg.test(row1):
-            if (!/^\d+\s+/.test(row1)) {
-              block = block.replace(/\r?\n$/g, '');
-              block = block.replace(/\r?\n/g, '<br>');
-              row_reg.lastIndex = 0;
-              rows = block.split(row_reg);
+      }
+      switch (env) {
+        case 'ul':
+          zsobjs = [];
+          while (true) {
+            r = rows.shift();
+            if (r === void 0) {
+              break;
             }
-        }
-        for (l = 0, len1 = rows.length; l < len1; l++) {
-          r = rows[l];
-          title1_reg.lastIndex = 0;
-          title2_reg.lastIndex = 0;
-          title3_reg.lastIndex = 0;
-          title4_reg.lastIndex = 0;
-          title5_reg.lastIndex = 0;
-          title6_reg.lastIndex = 0;
-          ul_list_reg.lastIndex = 0;
-          ol_list_reg.lastIndex = 0;
-          if (r === '') {
-            continue;
+            switch (true) {
+              case ul_reg.test(r):
+                re = ul_reg.exec(r);
+                zsobjs.push({
+                  type: 'li',
+                  content: re[1]
+                });
+                break;
+              default:
+                zsobjs = format([r], zsobjs);
+            }
           }
-          switch (true) {
-            case title1_reg.test(r):
-              title1_reg.lastIndex = 0;
-              re = title1_reg.exec(r);
-              objs.push({
-                type: 'h1',
-                content: re[1]
-              });
+          objs.push({
+            type: 'ul',
+            content: zsobjs
+          });
+          break;
+        case 'ol':
+          zsobjs = [];
+          while (true) {
+            r = rows.shift();
+            if (r === void 0) {
               break;
-            case title2_reg.test(r):
-              title2_reg.lastIndex = 0;
-              re = title2_reg.exec(r);
-              objs.push({
-                type: 'h2',
-                content: re[1]
-              });
-              break;
-            case title3_reg.test(r):
-              title3_reg.lastIndex = 0;
-              re = title3_reg.exec(r);
-              objs.push({
-                type: 'h3',
-                content: re[1]
-              });
-              break;
-            case title4_reg.test(r):
-              title4_reg.lastIndex = 0;
-              re = title4_reg.exec(r);
-              objs.push({
-                type: 'h4',
-                content: re[1]
-              });
-              break;
-            case title5_reg.test(r):
-              title5_reg.lastIndex = 0;
-              re = title5_reg.exec(r);
-              objs.push({
-                type: 'h5',
-                content: re[1]
-              });
-              break;
-            case title6_reg.test(r):
-              title6_reg.lastIndex = 0;
-              re = title6_reg.exec(r);
-              objs.push({
-                type: 'h6',
-                content: re[1]
-              });
-              break;
-            case ul_list_reg.test(r):
-              ul_list_reg.lastIndex = 0;
-              re = ul_list_reg.exec(r);
-              objs.push({
-                type: 'li',
-                content: re[1]
-              });
-              break;
-            case ol_list_reg.test(r):
-              ol_list_reg.lastIndex = 0;
-              re = ol_list_reg.exec(r);
-              objs.push({
-                type: 'li',
-                content: re[1]
-              });
-              break;
-            default:
-              objs.push({
-                type: 'p',
-                content: r
-              });
+            }
+            switch (true) {
+              case ol_reg.test(r):
+                re = ol_reg.exec(r);
+                zsobjs.push({
+                  type: 'li',
+                  content: re[1]
+                });
+                break;
+              default:
+                zsobjs = format([r], zsobjs);
+            }
           }
-        }
-        for (m = 0, len2 = objs.length; m < len2; m++) {
-          o = objs[m];
-          switch (o.type) {
-            case 'h1':
-              html += "<h1>" + o.content + "</h1>";
+          objs.push({
+            type: 'ol',
+            content: zsobjs
+          });
+          break;
+        case 'quote':
+          c = "";
+          while (true) {
+            r = rows.shift();
+            if (r === void 0) {
               break;
-            case 'h2':
-              html += "<h2>" + o.content + "</h2>";
-              break;
-            case 'h3':
-              html += "<h3>" + o.content + "</h3>";
-              break;
-            case 'h4':
-              html += "<h4>" + o.content + "</h4>";
-              break;
-            case 'h5':
-              html += "<h5>" + o.content + "</h5>";
-              break;
-            case 'h6':
-              html += "<h6>" + o.content + "</h6>";
-              break;
-            case 'li':
-              html += "<li>" + o.content + "</li>";
-              break;
-            case 'p':
-              html += "<p>" + o.content + "</p>";
-              break;
-            default:
-              html += o.content;
+            }
+            re = quote_reg.exec(r);
+            if (re) {
+              c += ' ' + re[1];
+            } else {
+              c += ' ' + r;
+            }
           }
-        }
-        ul_list_reg.lastIndex = 0;
-        ol_list_reg.lastIndex = 0;
-        switch (true) {
-          case ul_list_reg.test(row1):
-            html = "<ul>" + html + "</ul>";
+          objs.push({
+            type: 'quote',
+            content: c
+          });
+          break;
+        default:
+          while (true) {
+            r = rows.shift();
+            if (r === void 0) {
+              break;
+            }
+            switch (true) {
+              case title6_reg.test(r):
+                re = title6_reg.exec(r);
+                objs.push({
+                  type: 'h6',
+                  content: re[1]
+                });
+                break;
+              case title5_reg.test(r):
+                re = title5_reg.exec(r);
+                objs.push({
+                  type: 'h5',
+                  content: re[1]
+                });
+                break;
+              case title4_reg.test(r):
+                re = title4_reg.exec(r);
+                objs.push({
+                  type: 'h4',
+                  content: re[1]
+                });
+                break;
+              case title3_reg.test(r):
+                re = title3_reg.exec(r);
+                objs.push({
+                  type: 'h3',
+                  content: re[1]
+                });
+                break;
+              case title2_reg.test(r):
+                re = title2_reg.exec(r);
+                objs.push({
+                  type: 'h2',
+                  content: re[1]
+                });
+                break;
+              case title1_reg.test(r):
+                re = title1_reg.exec(r);
+                objs.push({
+                  type: 'h1',
+                  content: re[1]
+                });
+                break;
+              case empty_reg.test(r):
+                break;
+              case ul_reg.test(r):
+                zsrows = [];
+                zsrows.push(r);
+                while (true) {
+                  zsr = rows.shift();
+                  if (zsr === void 0 || empty_reg.test(zsr)) {
+                    break;
+                  }
+                  zsrows.push(zsr);
+                }
+                objs = format(zsrows, objs, 'ul');
+                break;
+              case ol_reg.test(r):
+                zsrows = [];
+                zsrows.push(r);
+                while (true) {
+                  zsr = rows.shift();
+                  if (zsr === void 0 || empty_reg.test(zsr)) {
+                    break;
+                  }
+                  zsrows.push(zsr);
+                }
+                objs = format(zsrows, objs, 'ol');
+                break;
+              case quote_reg.test(r):
+                zsrows = [];
+                zsrows.push(r);
+                while (true) {
+                  zsr = rows.shift();
+                  if (zsr === void 0 || empty_reg.test(zsr)) {
+                    break;
+                  }
+                  zsrows.push(zsr);
+                }
+                objs = format(zsrows, objs, 'quote');
+                break;
+              case code_reg.test(r):
+                re = code_reg.exec(r);
+                c = '';
+                while (true) {
+                  zsr = rows.shift();
+                  if (zsr === void 0 || code_reg.test(zsr)) {
+                    break;
+                  }
+                  c += zsr;
+                }
+                objs.push({
+                  type: 'code',
+                  lang: re[1],
+                  content: c
+                });
+                break;
+              case table_reg.test(r):
+                c = [];
+                objs.push({
+                  type: 'table',
+                  content: c
+                });
+                while (true) {
+                  if (r === void 0 || !table_reg.test(r)) {
+                    rows.unshift(r);
+                    break;
+                  }
+                  tds = r.split('|');
+                  tds.shift();
+                  tds.pop();
+                  zstr = [];
+                  c.push(zstr);
+                  for (i = 0, len = tds.length; i < len; i++) {
+                    td = tds[i];
+                    zstr.push(td);
+                  }
+                  r = rows.shift();
+                }
+                break;
+              default:
+                objs.push({
+                  type: 'p',
+                  content: r
+                });
+            }
+          }
+      }
+      return objs;
+    };
+    build = function(objs) {
+      var html, i, j, k, len, len1, len2, o, ref, td, tds_html, tr, trs_html;
+      html = '';
+      for (i = 0, len = objs.length; i < len; i++) {
+        o = objs[i];
+        switch (o.type) {
+          case 'h1':
+            html += "<h1>" + o.content + "</h1>";
             break;
-          case ol_list_reg.test(row1):
-            html = "<ol>" + html + "</ol>";
+          case 'h2':
+            html += "<h2>" + o.content + "</h2>";
+            break;
+          case 'h3':
+            html += "<h3>" + o.content + "</h3>";
+            break;
+          case 'h4':
+            html += "<h4>" + o.content + "</h4>";
+            break;
+          case 'h5':
+            html += "<h5>" + o.content + "</h5>";
+            break;
+          case 'h6':
+            html += "<h6>" + o.content + "</h6>";
+            break;
+          case 'p':
+            html += "<pre><p>" + o.content + "</p></pre>";
+            break;
+          case 'ul':
+            html += "<ul>" + (build(o.content)) + "</ul>";
+            break;
+          case 'ol':
+            html += "<ol>" + (build(o.content)) + "</ol>";
+            break;
+          case 'li':
+            html += "<li>" + o.content + "</li>";
+            break;
+          case 'quote':
+            html += "<blockquote>" + o.content + "</blockquote>";
+            break;
+          case 'code':
+            html += "<pre><code class='lang-" + o.lang + "'>" + o.content + "</code></pre>";
+            break;
+          case 'table':
+            trs_html = '';
+            ref = o.content;
+            for (j = 0, len1 = ref.length; j < len1; j++) {
+              tr = ref[j];
+              tds_html = '';
+              for (k = 0, len2 = tr.length; k < len2; k++) {
+                td = tr[k];
+                tds_html += "<td>" + td + "</td>";
+              }
+              trs_html += "<tr>" + tds_html + "</tr>";
+            }
+            html += "<table>" + trs_html + "</table>";
         }
-        total_html += html;
       }
-      for (k in code_seg) {
-        v = code_seg[k];
-        total_html = total_html.replace("\x00\x01\x02" + k, v);
-      }
-      return total_html;
+      return html;
+    };
+    return m_instance = function(content) {
+      var objs, rows;
+      content = before_format(content);
+      rows = content.split(/\r?\n/);
+      objs = format(rows);
+      return build(objs);
     };
   };
 })();

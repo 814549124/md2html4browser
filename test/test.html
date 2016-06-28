@@ -4,10 +4,29 @@
 	<meta charset="utf-8">
 	<title>测试</title>
 	<script type="text/javascript" src="../md2html4browser.js"></script>
+	<style type="text/css">
+		em{
+			color: red;
+		}
+		strong{
+			color: blue;
+		}
+		blockquote{
+			border: 1px solid #000;
+		}
+		code{
+			background: grey;
+		}
+		td{
+			border: 1px solid red;
+		}
+
+	</style>
 </head>
 <body>
 <textarea id="md">
 # 标题
+  这是标题
 ## b
 ### c
 #### d
@@ -15,6 +34,7 @@
 ###### f
 
 * a
+  这是序列
 * b
 
 - c
@@ -29,7 +49,8 @@
 4 4
 
 你好
-我好
+我
+
 
 *a*的血型是A
 **b**的血型是B
@@ -39,10 +60,13 @@
 	a += 44
 ```
 
+|a|b|
+|1|2|
+
 [百度](http://www.baidu.com)
 [百度锚][a](http://www.baidu.com)
 [锚][a]
-![好图](http://img2.imgtn.bdimg.com/it/u=2733642789,409491587&fm=21&gp=0.jpg)
+![好图][id_img](http://img2.imgtn.bdimg.com/it/u=2733642789,409491587&fm=21&gp=0.jpg)
 </textarea>
 <div id="content"></div>
 <script type="text/javascript">

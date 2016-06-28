@@ -7,27 +7,18 @@
 </head>
 <body>
 	<div id="md"><pre>
-* a
-		这是什么列表
-* b
+> Hello
+world!
 
-- c
-- d
-
-+ e
-+ f
-
-1 1
-2 2
-3 3
-	这是什么列表
-4 4
+> How,
+> are
+> you!
 	</pre></div>
 	<div id="content"></div>
 	<script type="text/javascript">
 		var cc = document.getElementById('content');
 		var marked = new Marked();
-		cc.innerHTML = marked("* a\r\n\t\t这是什么列表\r\n* b\r\n\r\n- c\r\n- d\r\n\r\n+ e\r\n+ f\r\n\r\n1 1\r\n2 2\r\n3 3\r\n\t这是什么列表\r\n4 4\r\n");
+		cc.innerHTML = marked("> Hello\nworld!\n\n> How,\n> are\n> you!\n");
 	</script>
 </body>
 </html>
