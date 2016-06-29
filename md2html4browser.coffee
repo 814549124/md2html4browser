@@ -31,7 +31,7 @@ Marked = null
 			#去掉头部的空行
 			while true
 				r = rows.shift()
-				if r is undefined || r is ''
+				if r is ''
 					continue
 				else
 					rows.unshift(r)
@@ -173,7 +173,7 @@ Marked = null
 									zsr = rows.shift()
 									if zsr is undefined || code_reg.test zsr
 										break
-									c += zsr
+									c += "\n" + zsr
 								objs.push {
 									type:'code'
 									lang: re[1]

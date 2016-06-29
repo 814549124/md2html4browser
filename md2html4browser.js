@@ -37,7 +37,7 @@ Marked = null;
       var c, i, len, r, re, td, tds, zsobjs, zsr, zsrows, zstr;
       while (true) {
         r = rows.shift();
-        if (r === void 0 || r === '') {
+        if (r === '') {
           continue;
         } else {
           rows.unshift(r);
@@ -210,7 +210,7 @@ Marked = null;
                   if (zsr === void 0 || code_reg.test(zsr)) {
                     break;
                   }
-                  c += zsr;
+                  c += "\n" + zsr;
                 }
                 objs.push({
                   type: 'code',
